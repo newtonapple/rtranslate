@@ -74,7 +74,7 @@ module Google
  "hi"=>"HINDI", 
  "fi"=>"FINNISH", 
  "ku"=>"KURDISH", 
- "pt-PT"=>"PORTUGUESE", 
+ "pt"=>"PORTUGUESE", 
  "bg"=>"BULGARIAN", 
  "uz"=>"UZBEK", 
  "ga"=>"IRISH", 
