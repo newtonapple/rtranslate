@@ -61,12 +61,17 @@ module Translate
     def translate(text, options = { })
       from = options[:from] || @default_from
       to = options[:to] || @default_to
+
+      # Google limits request to 5000 chars: http://code.google.com/apis/ajaxlanguage/terms.html
+      chunk_size = options[:chunk_size].to_i
+      chunk_size = 5000 if (chunk_size <= 0 || chunk_size > 5000)
+
       if (from.nil? || Google::Language.supported?(from)) && Google::Language.supported?(to)
         from = from ? Google::Language.abbrev(from) : nil
         to = Google::Language.abbrev(to)
         langpair = "#{from}|#{to}"
 
-        text.mb_chars.scan(/(.{1,500})/).inject("") do |result, st|
+        text.mb_chars.scan(/(.{1,#{chunk_size}})/).inject("") do |result, st|
           url = "#{GOOGLE_TRANSLATE_URL}?q=#{st}&langpair=#{langpair}&v=#{@version}"
           if @key
             url << "&key=#{@key}"
