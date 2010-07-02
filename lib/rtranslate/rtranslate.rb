@@ -12,6 +12,7 @@ module Translate
   class RTranslate
     # Google AJAX Language REST Service URL
     GOOGLE_TRANSLATE_URL = "http://ajax.googleapis.com/ajax/services/language/translate"
+    GOOGLE_TRANSLATE_URI = URI.parse(GOOGLE_TRANSLATE_URL)
 
     # Default version of Google AJAX Language API
     DEFAULT_VERSION = "1.0"
@@ -38,12 +39,17 @@ module Translate
       end
     end
 
-    def initialize(version = DEFAULT_VERSION, key = nil, default_from = nil, default_to = nil)
+    def initialize(version = DEFAULT_VERSION, key = nil, default_from = nil, default_to = nil, proxy_url=nil)
       @version = version
       @key = key
       @default_from = default_from
       @default_to = default_to
-
+      
+      if proxy_url
+        proxy_uri = URI.parse(proxy_url) 
+        @default_proxy = Net::HTTP::Proxy(proxy_uri.host, proxy_uri.port, proxy_uri.user, proxy_uri.password)
+      end
+      
       if @default_from && !(Google::Lanauage.supported?(@default_from))
         raise StandardError, "Unsupported source language '#{@default_from}'"
       end
@@ -70,13 +76,11 @@ module Translate
         from = from ? Google::Language.abbrev(from) : nil
         to = Google::Language.abbrev(to)
         langpair = "#{from}|#{to}"
-
-        text.mb_chars.scan(/(.{1,#{chunk_size}})/).inject("") do |result, st|
-          url = "#{GOOGLE_TRANSLATE_URL}?q=#{st}&langpair=#{langpair}&v=#{@version}"
-          if @key
-            url << "&key=#{@key}"
-          end
-          result += do_translate(url)
+        text.mb_chars.scan(/.{1,#{chunk_size}}/m).inject("") do |result, st|
+          data = {'q' => st, 'langpair' => langpair, 'v' => @version}
+          data['key'] = @key if @key
+          data['format'] = options[:format] if options[:format]
+          result += do_translate(GOOGLE_TRANSLATE_URL, data, options[:proxy])
         end
       else
         raise UnsupportedLanguagePair, "Translation from '#{from}' to '#{to}' isn't supported yet!"
@@ -120,8 +124,10 @@ module Translate
     end
 
     private
-    def do_translate(url) #:nodoc:
-      jsondoc = open(URI.escape(url)).read
+
+    def do_translate(url, data, proxy) #:nodoc:
+      jsondoc = http(proxy).post_form(GOOGLE_TRANSLATE_URI, data).response.body
+
       response = JSON.parse(jsondoc)
       if response["responseStatus"] == 200
         response["responseData"]["translatedText"]
@@ -132,4 +138,16 @@ module Translate
       raise StandardError, e.message
     end
   end
+  
+  def http(proxy)
+    proxy ||= @default_proxy
+
+    if proxy.is_a?(String)
+      proxy_uri = URI.parse(proxy)
+      proxy = Net::HTTP::Proxy(proxy_uri.host, proxy_uri.port, proxy_uri.user, proxy_uri.password)
+    end
+
+    proxy || Net::HTTP
+  end
+  
 end

@@ -1,8 +1,8 @@
+require 'uri'
+require 'open-uri'
 require File.join(File.dirname(__FILE__), 'rtranslate/language')
 require File.join(File.dirname(__FILE__), 'rtranslate/rtranslate')
 require File.join(File.dirname(__FILE__), 'rtranslate/detection')
-require 'uri'
-require 'open-uri'
 
 begin
   require 'json'
