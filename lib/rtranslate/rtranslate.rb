@@ -64,6 +64,9 @@ module Translate
     # Configuration options:
     # * <tt>:from</tt> - The source language
     # * <tt>:to</tt> - The target language
+    # * <tt>:format</tt> - "html" or "text" (see API doc)
+    # * <tt>:chunk_size</tt> - Number of characters per request, max 5000.
+    # * <tt>:proxy</tt> - Relay traffic through a HTTP proxy, e.g. Tor: "http://127.0.0.1:8118"
     def translate(text, options = { })
       from = options[:from] || @default_from
       to = options[:to] || @default_to
