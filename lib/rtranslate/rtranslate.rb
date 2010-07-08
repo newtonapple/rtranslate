@@ -21,16 +21,16 @@ module Translate
     attr_reader :default_from, :default_to
 
     class << self
-      def translate(text, from, to)
-        RTranslate.new.translate(text, { :from => from, :to => to })
+      def translate(text, from, to, options={})
+        RTranslate.new.translate(text, options.merge(:from => from, :to => to))
       end
       alias_method :t, :translate
 
-      def translate_strings(text_array, from, to)
-        RTranslate.new.translate_strings(text_array, {:from => from, :to => to})
+      def translate_strings(text_array, from, to, options={})
+        RTranslate.new.translate_strings(text_array, options.merge(:from => from, :to => to))
       end
 
-      def translate_string_to_languages(text, options)
+      def translate_string_to_languages(text, options={})
         RTranslate.new.translate_string_to_languages(text, options)
       end
 
@@ -64,10 +64,10 @@ module Translate
     # Configuration options:
     # * <tt>:from</tt> - The source language
     # * <tt>:to</tt> - The target language
-    # * <tt>:format</tt> - "html" or "text" (see API doc)
+    # * <tt>:format</tt> - "html", "text" , or nil (same as "html")
     # * <tt>:chunk_size</tt> - Number of characters per request, max 5000.
-    # * <tt>:proxy</tt> - Relay traffic through a HTTP proxy, e.g. Tor: "http://127.0.0.1:8118"
-    def translate(text, options = { })
+    # * <tt>:proxy</tt> - Relay traffic through an HTTP proxy, e.g. Tor: "http://127.0.0.1:8118"
+    def translate(text, options={})
       from = options[:from] || @default_from
       to = options[:to] || @default_to
 
@@ -95,7 +95,7 @@ module Translate
     # Configuration options
     # * <tt>:from</tt> - The source language
     # * <tt>:to</tt> - The target language
-    def translate_strings(text_array, options = { })
+    def translate_strings(text_array, options={})
       text_array.collect do |text|
         self.translate(text, options)
       end

@@ -8,7 +8,7 @@ class Translate::TranslateTest < Test::Unit::TestCase
   include Google::Language
   def test_english_translate
     assert_equal("مرحبا العالم", Translate.t("Hello world", "ENGLISH", "ARABIC"));
-    assert_equal("世界您好", Translate.t("Hello world", "ENGLISH", "CHINESE_SIMPLIFIED"));
+    assert_equal("您好世界", Translate.t("Hello world", "ENGLISH", "CHINESE_SIMPLIFIED"));
     assert_equal("Bonjour tout le monde", Translate.t("Hello world", "ENGLISH", "FRENCH"));
     assert_equal("Hallo Welt", Translate.t("Hello world", "ENGLISH", "GERMAN"));
     assert_equal("Ciao a tutti", Translate.t("Hello world", "ENGLISH", "ITALIAN"));
@@ -21,7 +21,7 @@ class Translate::TranslateTest < Test::Unit::TestCase
 
   def test_auto_detect_translate
     assert_equal("مرحبا العالم", Translate.t("Hello world", nil, "ARABIC"));
-    assert_equal("世界您好", Translate.t("Hello world", nil, "CHINESE_SIMPLIFIED"));
+    assert_equal("您好世界", Translate.t("Hello world", nil, "CHINESE_SIMPLIFIED"));
     assert_equal("Bonjour tout le monde", Translate.t("Hello world", nil, "FRENCH"));
     assert_equal("Hallo Welt", Translate.t("Hello world", nil, "GERMAN"));
     assert_equal("Ciao a tutti", Translate.t("Hello world", nil, "ITALIAN"));
@@ -44,15 +44,15 @@ class Translate::TranslateTest < Test::Unit::TestCase
   end
 
   def test_translate_strings
-    assert_equal(["喂", "世界"], Translate::RTranslate.translate_strings(["Hello", "World"],  "en", "zh-CN"))
+    assert_equal(["你好", "世界"], Translate::RTranslate.translate_strings(["Hello", "World"],  "en", "zh-CN"))
   end
 
   def test_translate_string_to_languages
-    assert_equal(["世界您好", "ハローワールド"], Translate::RTranslate.translate_string_to_languages("Hello World", {:from => "en", :to => ["zh-CN", "ja"]}))
+    assert_equal(["您好世界", "ハローワールド"], Translate::RTranslate.translate_string_to_languages("Hello World", {:from => "en", :to => ["zh-CN", "ja"]}))
   end
 
   def test_batch_translate
-    assert_equal(["世界您好", "ハローワールド"],
+    assert_equal(["您好世界", "ハローワールド"],
                  Translate::RTranslate.batch_translate([["Hello World", {:from => "en", :to => "zh-CN"}], ["Hello World", {:from => "en", :to => "ja"}]]))
   end
 end
