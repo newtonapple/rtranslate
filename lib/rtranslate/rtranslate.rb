@@ -140,17 +140,17 @@ module Translate
     rescue Exception => e
       raise StandardError, e.message
     end
-  end
-  
-  def http(proxy)
-    proxy ||= @default_proxy
 
-    if proxy.is_a?(String)
-      proxy_uri = URI.parse(proxy)
-      proxy = Net::HTTP::Proxy(proxy_uri.host, proxy_uri.port, proxy_uri.user, proxy_uri.password)
+    def http(proxy)
+      proxy ||= @default_proxy
+
+      if proxy.is_a?(String)
+        proxy_uri = URI.parse(proxy)
+        proxy = Net::HTTP::Proxy(proxy_uri.host, proxy_uri.port, proxy_uri.user, proxy_uri.password)
+      end
+
+      proxy || Net::HTTP
     end
 
-    proxy || Net::HTTP
-  end
-  
+  end  
 end
