@@ -7,7 +7,7 @@ require 'rtranslate'
 class Translate::DetectionTest < Test::Unit::TestCase
   include Google::Language
   def test_detection
-    d = Detection.new
+    d = Translate::Detection.new
     assert_equal "es", d.detect("para poner este importante proyecto en práctica")
     assert_equal "en", d.detect("this is a test of the Emergency text categorizing system.")
     assert_equal "fr", d.detect("serait désigné peu après PDG d'Antenne 2 et de FR 3. Pas même lui ! Le")

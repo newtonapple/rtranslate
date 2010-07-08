@@ -38,7 +38,7 @@ class Translate::TranslateTest < Test::Unit::TestCase
   end
 
   def test_unsupported_translate
-    assert_raise UnsupportedLanguagePair do
+    assert_raise Translate::UnsupportedLanguagePair do
       Translate::RTranslate.t("你好世界", 'zh', 'hz')
     end
   end

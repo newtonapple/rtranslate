@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'uri'
 require 'open-uri'
 require 'net/http'
@@ -13,21 +15,26 @@ rescue LoadError
   require 'json'
 end
 
+
 unless defined?(ActiveSupport)
-  require 'activesupport'
+  require 'active_support'
+  if ActiveSupport.respond_to?(:load_all!)
+    require 'active_support/core_ext/string/multibyte'
+  end
 end
 
-$KCODE = 'u'
+if RUBY_VERSION < '1.9'
+  $KCODE = 'u'
+end
 
-include Translate
 def Translate.t(text, from, to, options={})
-  RTranslate.translate(text, from, to, options)
+  Translate::RTranslate.translate(text, from, to, options)
 rescue
   "Error: " + $!
 end
 
 def Translate.d(text)
-  Detection.detect(text)
+  Translate::Detection.detect(text)
 rescue
   "Error: " + $!
 end
