@@ -83,7 +83,7 @@ module Translate
           data = {'q' => st, 'langpair' => langpair, 'v' => @version}
           data['key'] = @key if @key
           data['format'] = options[:format] if options[:format]
-          result += do_translate(GOOGLE_TRANSLATE_URL, data, options[:proxy])
+          result += do_translate(data, options[:proxy])
         end
       else
         raise UnsupportedLanguagePair, "Translation from '#{from}' to '#{to}' isn't supported yet!"
@@ -128,7 +128,7 @@ module Translate
 
     private
 
-    def do_translate(url, data, proxy) #:nodoc:
+    def do_translate(data, proxy) #:nodoc:
       jsondoc = http(proxy).post_form(GOOGLE_TRANSLATE_URI, data).response.body
 
       response = JSON.parse(jsondoc)
